@@ -9,7 +9,7 @@ $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
 // insert
 $query = $db->insert('users')
             ->set(array(
-              username => 'test user',
+                        username => 'test user',
               password => 123456,
               email => 'test@mail.com'
             ));
