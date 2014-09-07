@@ -256,8 +256,8 @@ class BasicDB extends PDO
         $this->pageCount = ceil($this->totalRecord / $this->paginationLimit);
         $start = ($this->page * $this->paginationLimit) - $this->paginationLimit;
         return array(
-            start => $start,
-            limit => $this->paginationLimit
+            'start' => $start,
+            'limit' => $this->paginationLimit
         );
     }
 
