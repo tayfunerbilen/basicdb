@@ -1,5 +1,5 @@
 {
-    "name": "tayfunerbilen/BasicDB",
+    "name": "tayfunerbilen/basicdb",
     "type": "library",
     "description": "PDO yapısını kullanarak select, update, insert ve delete işlemlerini hızlandırmak için hazırlanmış ek olarak sayfalama olayı eklenmiş veritabanı sınıfıdır.",
     "keywords": ["db","pdo"],
