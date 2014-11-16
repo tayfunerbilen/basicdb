@@ -6,23 +6,106 @@
  * @web http://www.erbilen.net
  * @mail tayfunerbilen@gmail.com
  * @date 13 Nisan 2014
+ * @update 17 Kasım 2014
  */
 class BasicDB extends PDO
 {
 
+    /**
+     * sql sorgusunun tutulduğu değişken
+     *
+     * @var
+     */
     private $sql;
+
+    /**
+     * tab adının tutulduğu değişken
+     *
+     * @var
+     */
     private $tableName;
+
+    /**
+     * koşulların tutulduğu değişken
+     *
+     * @var
+     */
     private $where;
+
+    /**
+     * join kurallarının tutulduğu değişken
+     *
+     * @var
+     */
     private $join;
+
+    /**
+     * orderby değerinin tutulduğu değişken
+     *
+     * @var
+     */
     private $orderBy;
+
+    /**
+     * groupby değerinin tutulduğu değişken
+     *
+     * @var
+     */
+    private $groupBy;
+
+    /**
+     * limit değerinin tutulduğu değişken
+     *
+     * @var
+     */
     private $limit;
 
+    /**
+     * sayfa $_GET[] parametresinin tutulduğu değişken
+     *
+     * @var
+     */
     private $page;
+
+    /**
+     * Toplam sütun sayısının tutulduğu değişken
+     *
+     * @var
+     */
     private $totalRecord;
+
+    /**
+     * Toplam sayfa sayısının tutulduğu değişken
+     *
+     * @var
+     */
     private $pageCount;
+
+    /**
+     * Sayfa limitinin tutulduğu değişken
+     *
+     * @var
+     */
     private $paginationLimit;
+
+    /**
+     * Sayfalama kodlarının tutulduğu değişken
+     *
+     * @var
+     */
     private $html;
 
+
+
+    /**
+     * BasicDB kurucu metodu
+     *
+     * @param $host
+     * @param $dbname
+     * @param $username
+     * @param $password
+     * @param string $charset
+     */
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
     {
         parent::__construct('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
@@ -31,6 +114,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sql sorguda tablo seçme işlemi belirlenir.
+     *
      * @param $tableName
      * @return $this
      */
@@ -42,6 +127,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sql sorguda kolon seçme işlemi belirlenir.
+     *
      * @param $from
      * @return $this
      */
@@ -52,19 +139,36 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sql sorguda -where- işlemini belirler.
+     *
      * @param $column
      * @param $value
      * @param string $mark
      * @param bool $filter
      * @return $this
      */
-    public function where($column, $value, $mark = '=')
+    public function where($column, $value = '', $mark = '=', $logical = '&&')
     {
-        $this->where[] = array($column, $value, $mark);
+        $this->where[] = array($column, $value, $mark, $logical);
         return $this;
     }
 
     /**
+     * Sql sorguda -or where- işlemini belirler.
+     *
+     * @param $column
+     * @param $value
+     * @param $mark
+     * @return $this
+     */
+    public function or_where($column, $value, $mark = '='){
+        $this->where($column, $value, $mark, '||');
+        return $this;
+    }
+
+    /**
+     * Sql sorguda -join- işlemini belirler.
+     *
      * @param $targetTable
      * @param $joinSql
      * @param string $joinType
@@ -77,6 +181,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sql sorguda -orderby- işlemini belirler.
+     *
      * @param $columnName
      * @param string $sort
      */
@@ -87,6 +193,20 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sql sorguda -groupby- işlemini belirler.
+     *
+     * @param $columnName
+     * @return $this
+     */
+    public function groupby($columnName)
+    {
+        $this->groupBy = ' GROUP BY ' . $columnName;
+        return $this;
+    }
+
+    /**
+     * Sql sorguda -limit- işlemini belirler.
+     *
      * @param $start
      * @param $limit
      * @return $this
@@ -98,6 +218,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Insert/Update/Select işlemlerini çalıştırmak için kullanılır.
+     *
      * @param bool $single
      * @return array|mixed
      */
@@ -107,26 +229,20 @@ class BasicDB extends PDO
             $this->sql .= implode(' ', $this->join);
             $this->join = null;
         }
-        if (is_array($this->where) && count($this->where) > 0) {
-            $this->sql .= ' WHERE ';
-            $where = array();
-            foreach ($this->where as $arg) {
-                if (!is_numeric($arg[1])) {
-                    $arg[1] = '"' . $arg[1] . '"';
-                }
-                $where[] = '`' . $arg[0] . '` ' . $arg[2] . ' ' . $arg[1];
-            }
-            $this->sql .= implode(' && ', $where);
-            $this->where = null;
-        }
+        $this->get_where();
         if ($this->orderBy) {
             $this->sql .= $this->orderBy;
             $this->orderBy = null;
+        }
+        if ($this->groupBy) {
+            $this->sql .= $this->groupBy;
+            $this->groupBy = null;
         }
         if ($this->limit) {
             $this->sql .= $this->limit;
             $this->limit = null;
         }
+        echo $this->sql;
         $query = $this->query($this->sql);
 
         if ($single)
@@ -136,6 +252,27 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sorgu çalıştırma metodlarında where işlemini yerine getirir.
+     */
+    private function get_where()
+    {
+        if (is_array($this->where) && count($this->where) > 0) {
+            $this->sql .= ' WHERE ';
+            $where = array();
+            foreach ($this->where as $key => $arg) {
+                if (!is_numeric($arg[1])) {
+                    $arg[1] = '"' . $arg[1] . '"';
+                }
+                $where[] = ( $key > 0 ? $arg[3] : null ) . ' `' . $arg[0] . '` ' . strtoupper($arg[2]) . ' ' . $arg[1];
+            }
+            $this->sql .= implode(' ', $where);
+            $this->where = null;
+        }
+    }
+
+    /**
+     * Insert işlemi için kullanılır.
+     *
      * @param $tableName
      * @return $this
      */
@@ -146,6 +283,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Insert işlemi için veri yüklemede kullanılır.
+     *
      * @param $columns
      * @return bool
      */
@@ -158,24 +297,15 @@ class BasicDB extends PDO
             $col[] = $column . ' = ? ';
         }
         $this->sql .= ' SET ' . implode(', ', $col);
-        if (is_array($this->where) && count($this->where) > 0) {
-            $this->sql .= ' WHERE ';
-            $where = array();
-            foreach ($this->where as $arg) {
-                if (!is_numeric($arg[1])) {
-                    $arg[1] = '"' . $arg[1] . '"';
-                }
-                $where[] = '`' . $arg[0] . '` ' . $arg[2] . ' ' . $arg[1];
-            }
-            $this->sql .= implode(' && ', $where);
-            $this->where = null;
-        }
+        $this->get_where();
         $query = $this->prepare($this->sql);
         $result = $query->execute($val);
         return $result;
     }
 
     /**
+     * Son eklenen id yi geriye döndürür.
+     *
      * @return string
      */
     public function lastId()
@@ -184,6 +314,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Güncelleme işlemi için kullanılır.
+     *
      * @param $columnName
      * @return $this
      */
@@ -194,6 +326,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Silme işlemi için kullanılır.
+     *
      * @param $columnName
      * @return $this
      */
@@ -204,26 +338,22 @@ class BasicDB extends PDO
     }
 
     /**
+     * Silme işlemini tamamlamak için kullanılır.
+     *
      * @return int
      */
     public function done()
     {
-        if (is_array($this->where) && count($this->where) > 0) {
-            $this->sql .= ' WHERE ';
-            $where = array();
-            foreach ($this->where as $arg) {
-                if (!is_numeric($arg[1])) {
-                    $arg[1] = '"' . $arg[1] . '"';
-                }
-                $where[] = '`' . $arg[0] . '` ' . $arg[2] . ' ' . $arg[1];
-            }
-            $this->sql .= implode(' && ', $where);
-            $this->where = null;
-        }
+        $this->get_where();
         $query = $this->exec($this->sql);
         return $query;
     }
 
+    /**
+     * Toplam sonucu -total- sütun adıyla geriye döndürür.
+     *
+     * @return mixed
+     */
     public function total()
     {
         if (is_array($this->where) && count($this->where) > 0) {
@@ -243,6 +373,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sayfalama işlemine ait start ve limit değerlerini geriye döndürür.
+     *
      * @param $totalRecord
      * @param $paginationLimit
      * @param $pageParamName
@@ -262,16 +394,18 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sayfalama işlemini geriye döndürür.
+     *
      * @param $url
      * @return mixed
      */
-    public function showPagination($url)
+    public function showPagination($url, $class = 'active')
     {
         if ($this->totalRecord > $this->paginationLimit) {
             for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i++) {
                 if ($i > 0 && $i <= $this->pageCount) {
                     $this->html .= '<a class="';
-                    $this->html .= ($i == $this->page ? 'active' : null);
+                    $this->html .= ($i == $this->page ? $class : null);
                     $this->html .= '" href="' . str_replace('[page]', $i, $url) . '">' . $i . '</a>';
                 }
             }
@@ -280,6 +414,8 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sayfalama işleminde bir sonraki sayfayı geriye döndürür.
+     *
      * @return bool
      */
     public function nextPage()
@@ -288,11 +424,23 @@ class BasicDB extends PDO
     }
 
     /**
+     * Sayfalama işleminde bir önceki sayfayı geriye döndürür.
+     *
      * @return bool
      */
     public function prevPage()
     {
         return ($this->page - 1 > 0 ? $this->page - 1 : 1);
+    }
+
+    /**
+     * SQL sorgusunu string olarak geriye döndürür.
+     *
+     * @return mixed
+     */
+    public function getSqlString()
+    {
+        return $this->sql;
     }
 
 }
