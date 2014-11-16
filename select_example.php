@@ -10,6 +10,7 @@ $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
 $query = $db->select('post')
             ->join('users', '%s.user_id = %s.post_userid', 'left')
             ->where('post_approval', 1)
+            ->or_where('post_approval', 2)
             ->orderby('post_id', 'desc')
             ->limit(0, 10)
             ->run();
