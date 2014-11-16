@@ -12,6 +12,7 @@ $query = $db->select('post')
             ->where('post_approval', 1)
             ->or_where('post_approval', 2)
             ->orderby('post_id', 'desc')
+            ->groupby('post_user')
             ->limit(0, 10)
             ->run();
    
