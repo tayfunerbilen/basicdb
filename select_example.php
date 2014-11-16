@@ -2,6 +2,7 @@
 
 // class file
 require 'BasicDB.php';
+use erbilen;
 
 // connection
 $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
