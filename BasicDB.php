@@ -7,6 +7,9 @@
  * @mail tayfunerbilen@gmail.com
  * @date 13 Nisan 2014
  */
+namespace erbilen;
+use PDO;
+ 
 class BasicDB extends PDO
 {
 
