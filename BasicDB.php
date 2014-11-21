@@ -242,7 +242,6 @@ class BasicDB extends PDO
             $this->sql .= $this->limit;
             $this->limit = null;
         }
-        echo $this->sql;
         $query = $this->query($this->sql);
 
         if ($single)
