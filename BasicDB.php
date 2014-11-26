@@ -8,6 +8,9 @@
  * @date 13 Nisan 2014
  * @update 17 Kasım 2014
  */
+namespace erbilen;
+use PDO;
+ 
 class BasicDB extends PDO
 {
 
