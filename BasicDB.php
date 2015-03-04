@@ -8,7 +8,7 @@
  * @date 13 Nisan 2014
  * @update 17 Kasım 2014
  */
-class BasicDB extends PDO
+class basicdb extends PDO
 {
 
     /**
@@ -259,10 +259,11 @@ class BasicDB extends PDO
             $this->sql .= ' WHERE ';
             $where = array();
             foreach ($this->where as $key => $arg) {
-                if (!is_numeric($arg[1])) {
-                    $arg[1] = '"' . $arg[1] . '"';
+                if ( strstr($arg[1], 'FIND_IN_SET') ){
+                    $where[] = ( $key > 0 ? $arg[3] : null ) . $arg[1];
+                } else {
+                    $where[] = ( $key > 0 ? $arg[3] : null ) . ' `' . $arg[0] . '` ' . strtoupper($arg[2]) . ' ' . (strstr($arg[2], 'IN') ? '(' : '"') . $arg[1] . (strstr($arg[2], 'IN') ? ')' : '"');
                 }
-                $where[] = ( $key > 0 ? $arg[3] : null ) . ' `' . $arg[0] . '` ' . strtoupper($arg[2]) . ' ' . $arg[1];
             }
             $this->sql .= implode(' ', $where);
             $this->where = null;
@@ -355,17 +356,22 @@ class BasicDB extends PDO
      */
     public function total()
     {
-        if (is_array($this->where) && count($this->where) > 0) {
-            $this->sql .= ' WHERE ';
-            $where = array();
-            foreach ($this->where as $arg) {
-                if (!is_numeric($arg[1])) {
-                    $arg[1] = '"' . $arg[1] . '"';
-                }
-                $where[] = '`' . $arg[0] . '` ' . $arg[2] . ' ' . $arg[1];
-            }
-            $this->sql .= implode(' && ', $where);
-            $this->where = null;
+        if ($this->join) {
+            $this->sql .= implode(' ', $this->join);
+            $this->join = null;
+        }
+        $this->get_where();
+        if ($this->orderBy) {
+            $this->sql .= $this->orderBy;
+            $this->orderBy = null;
+        }
+        if ($this->groupBy) {
+            $this->sql .= $this->groupBy;
+            $this->groupBy = null;
+        }
+        if ($this->limit) {
+            $this->sql .= $this->limit;
+            $this->limit = null;
         }
         $query = $this->query($this->sql)->fetch(PDO::FETCH_ASSOC);
         return $query['total'];
@@ -403,9 +409,9 @@ class BasicDB extends PDO
         if ($this->totalRecord > $this->paginationLimit) {
             for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i++) {
                 if ($i > 0 && $i <= $this->pageCount) {
-                    $this->html .= '<a class="';
+                    $this->html .= '<li class="';
                     $this->html .= ($i == $this->page ? $class : null);
-                    $this->html .= '" href="' . str_replace('[page]', $i, $url) . '">' . $i . '</a>';
+                    $this->html .= '"><a href="' . str_replace('[page]', $i, $url) . '">' . $i . '</a>';
                 }
             }
             return $this->html;
