@@ -230,18 +230,19 @@ class basicdb extends PDO
             $this->join = null;
         }
         $this->get_where();
-        if ($this->orderBy) {
-            $this->sql .= $this->orderBy;
-            $this->orderBy = null;
-        }
         if ($this->groupBy) {
             $this->sql .= $this->groupBy;
             $this->groupBy = null;
+        }
+        if ($this->orderBy) {
+            $this->sql .= $this->orderBy;
+            $this->orderBy = null;
         }
         if ($this->limit) {
             $this->sql .= $this->limit;
             $this->limit = null;
         }
+
         $query = $this->query($this->sql);
 
         if ($single)
@@ -388,7 +389,7 @@ class basicdb extends PDO
     public function pagination($totalRecord, $paginationLimit, $pageParamName)
     {
         $this->paginationLimit = $paginationLimit;
-        $this->page = isset($_GET[$pageParamName]) ? $_GET[$pageParamName] : 1;
+        $this->page = isset($_GET[$pageParamName]) && is_numeric($_GET[$pageParamName]) ? $_GET[$pageParamName] : 1;
         $this->totalRecord = $totalRecord;
         $this->pageCount = ceil($this->totalRecord / $this->paginationLimit);
         $start = ($this->page * $this->paginationLimit) - $this->paginationLimit;
