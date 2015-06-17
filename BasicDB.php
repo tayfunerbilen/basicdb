@@ -112,6 +112,17 @@ class basicdb extends PDO
         $this->query('SET CHARACTER SET ' . $charset);
         $this->query('SET NAMES ' . $charset);
     }
+    
+    /**
+     * Run custom sql
+     * @param $sql raw sql
+     * @return $this
+     */
+    public function rawQuery($sql)
+    {
+         $this->sql = $sql;
+         return $this;
+    }
 
     /**
      * Sql sorguda tablo seçme işlemi belirlenir.
