@@ -1,0 +1,340 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <file name="BasicDB.php">
+    <totals>
+      <lines total="501" comments="251" code="250" executable="120" executed="80" percent="66.67%"/>
+      <methods count="23" tested="13" percent="56.52%"/>
+      <functions count="0" tested="0" percent=""/>
+      <classes count="1" tested="0" percent="0.00%"/>
+      <traits count="0" tested="0" percent=""/>
+    </totals>
+    <class name="BasicDB" start="16" executable="120" executed="80" crap="142.59">
+      <package full="" name="" sub="" category=""/>
+      <namespace name="Erbilen\Database"/>
+      <method name="__construct" signature="__construct($host, $dbname, $username, $password, $charset = 'utf8')" start="128" end="133" crap="1" executable="4" executed="4" coverage="100"/>
+      <method name="select" signature="select($tableName)" start="142" end="147" crap="1" executable="3" executed="3" coverage="100"/>
+      <method name="from" signature="from($from)" start="156" end="160" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="where" signature="where($column, $value = '', $mark = '=', $logical = '&amp;&amp;')" start="173" end="182" crap="1" executable="6" executed="6" coverage="100"/>
+      <method name="or_where" signature="or_where($column, $value, $mark = '=')" start="195" end="199" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="join" signature="join($targetTable, $joinSql, $joinType = 'inner')" start="211" end="215" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="orderby" signature="orderby($columnName, $sort = 'ASC')" start="224" end="228" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="groupby" signature="groupby($columnName)" start="237" end="241" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="limit" signature="limit($start, $limit)" start="252" end="256" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="run" signature="run($single = false)" start="264" end="294" crap="7.33" executable="21" executed="14" coverage="66.666666666667"/>
+      <method name="get_where" signature="get_where()" start="299" end="314" crap="9.29" executable="13" executed="11" coverage="84.615384615385"/>
+      <method name="insert" signature="insert($tableName)" start="323" end="327" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="set" signature="set($columns)" start="336" end="349" crap="2" executable="11" executed="11" coverage="100"/>
+      <method name="lastId" signature="lastId()" start="356" end="359" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="update" signature="update($columnName)" start="368" end="372" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="delete" signature="delete($columnName)" start="381" end="385" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="done" signature="done()" start="392" end="397" crap="1" executable="3" executed="3" coverage="100"/>
+      <method name="total" signature="total()" start="404" end="425" crap="11.30" executable="19" executed="7" coverage="36.842105263158"/>
+      <method name="pagination" signature="pagination($totalRecord, $paginationLimit, $pageParamName)" start="438" end="449" crap="3" executable="8" executed="8" coverage="100"/>
+      <method name="showPagination" signature="showPagination($url, $class = 'active')" start="458" end="470" crap="42" executable="10" executed="0" coverage="0"/>
+      <method name="nextPage" signature="nextPage()" start="477" end="480" crap="6" executable="1" executed="0" coverage="0"/>
+      <method name="prevPage" signature="prevPage()" start="487" end="490" crap="6" executable="1" executed="0" coverage="0"/>
+      <method name="getSqlString" signature="getSqlString()" start="497" end="500" crap="2" executable="1" executed="0" coverage="0"/>
+    </class>
+    <coverage>
+      <line nr="130">
+        <covered by="BasicDBTest::testDataBaseConnection"/>
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="131">
+        <covered by="BasicDBTest::testDataBaseConnection"/>
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="132">
+        <covered by="BasicDBTest::testDataBaseConnection"/>
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="133">
+        <covered by="BasicDBTest::testDataBaseConnection"/>
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="144">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="145">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="146">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="158">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="159">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="175">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="176">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="177">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="178">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="180">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="181">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="226">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="227">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="254">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="255">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="266">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="270">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="271">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="275">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="276">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="277">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="278">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="279">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="280">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="281">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="282">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="285">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="287">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="291">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="301">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="302">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="303">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="304">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="305">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="308">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="310">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="311">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="312">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="313">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="314">
+        <covered by="BasicDBTest::testSelect"/>
+        <covered by="BasicDBTest::testPagination"/>
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="325">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="326">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="338">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="339">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="340">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="341">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="342">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="343">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="344">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="345">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="346">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="347">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="348">
+        <covered by="BasicDBTest::testUpdate"/>
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="358">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="370">
+        <covered by="BasicDBTest::testUpdate"/>
+      </line>
+      <line nr="371">
+        <covered by="BasicDBTest::testUpdate"/>
+      </line>
+      <line nr="383">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="384">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="394">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="395">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="396">
+        <covered by="BasicDBTest::testDelete"/>
+      </line>
+      <line nr="406">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="410">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="411">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="415">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="419">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="423">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="424">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="440">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="441">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="442">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="443">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="444">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="446">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="447">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+      <line nr="448">
+        <covered by="BasicDBTest::testPagination"/>
+      </line>
+    </coverage>
+  </file>
+</phpunit>

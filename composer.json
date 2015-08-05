@@ -1,8 +1,8 @@
 {
     "name": "tayfunerbilen/basicdb",
     "type": "library",
-    "description": "PDO yapısını kullanarak select, update, insert ve delete işlemlerini hızlandırmak için hazırlanmış ek olarak sayfalama olayı eklenmiş veritabanı sınıfıdır.",
-    "keywords": ["db","pdo"],
+    "description": "A BasicDB implementation using PDO. Select, Insert, Update and Delete operations in an OOP way.",
+    "keywords": ["db","pdo","oop"],
     "homepage": "http://github.com/tayfunerbilen/BasicDB",
     "license": "MIT",
     "authors": [
@@ -11,14 +11,34 @@
             "email": "tayfunerbilen@gmail.com",
             "homepage": "http://www.erbilen.net",
             "role": "Developer"
+        },
+        {
+            "name": "Midori Kocak",
+            "email": "mtkocak@gmail.com",
+            "homepage": "http://www.mtkocak.com",
+            "role": "Developer"
         }
     ],
     "require": {
         "php": ">=5.3.0"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "2.*",
+        "phpmd/phpmd": "2.1.*",
+        "sebastian/phpcpd": "2.0.*",
+        "pdepend/pdepend": "2.0.*",
+        "phploc/phploc": "2.0.*",
+        "phpunit/phpunit": "4.7.*",
+        "theseer/phpdox": "0.7.*",
+        "phpunit/dbunit": "^1.4"
+    },
+    "config": {
+        "bin-dir": "bin/",
+        "preferred-install": "dist"
+    },
     "autoload": {
-        "psr-0": {
-            "Monolog": "src"
+        "psr-4": {
+            "Erbilen\\Database\\": "src"
         }
     }
 }

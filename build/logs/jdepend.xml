@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PDepend>
+  <Packages>
+    <Package name="Erbilen\Database">
+      <Stats>
+        <TotalClasses>5</TotalClasses>
+        <ConcreteClasses>1</ConcreteClasses>
+        <AbstractClasses>4</AbstractClasses>
+        <Ca>0</Ca>
+        <Ce>1</Ce>
+        <A>0.8</A>
+        <I>1</I>
+        <D>0.8</D>
+      </Stats>
+      <ConcreteClasses>
+        <Class sourceFile="/Users/mtkocak/Working/basicDB/src/BasicDB.php">BasicDB</Class>
+      </ConcreteClasses>
+      <AbstractClasses>
+        <Class sourceFile="/Users/mtkocak/Working/basicDB/src/AddEditDeleteUpdateIndexViewAdapter.php">AddEditDeleteUpdateIndexView</Class>
+        <Class sourceFile="/Users/mtkocak/Working/basicDB/src/AddEditDeleteUpdateIndexViewInterface.php">AddEditDeleteUpdateIndexViewInterface</Class>
+        <Class sourceFile="/Users/mtkocak/Working/basicDB/src/CrudableAdapter.php">CrudableAdapter</Class>
+        <Class sourceFile="/Users/mtkocak/Working/basicDB/src/CrudableInterface.php">CrudableInterface</Class>
+      </AbstractClasses>
+      <DependsUpon>
+        <Package></Package>
+      </DependsUpon>
+      <UsedBy/>
+    </Package>
+  </Packages>
+  <Cycles/>
+</PDepend>

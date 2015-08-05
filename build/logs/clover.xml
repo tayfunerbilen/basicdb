@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1438765360">
+  <project timestamp="1438765360">
+    <package name="Erbilen\Database">
+      <file name="/Users/mtkocak/Working/basicDB/src/BasicDB.php">
+        <class name="BasicDB" namespace="Erbilen\Database">
+          <metrics methods="23" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="120" coveredstatements="80" elements="143" coveredelements="93"/>
+        </class>
+        <line num="128" type="method" name="__construct" crap="1" count="5"/>
+        <line num="130" type="stmt" count="5"/>
+        <line num="131" type="stmt" count="5"/>
+        <line num="132" type="stmt" count="5"/>
+        <line num="133" type="stmt" count="5"/>
+        <line num="142" type="method" name="select" crap="1" count="2"/>
+        <line num="144" type="stmt" count="2"/>
+        <line num="145" type="stmt" count="2"/>
+        <line num="146" type="stmt" count="2"/>
+        <line num="156" type="method" name="from" crap="1" count="1"/>
+        <line num="158" type="stmt" count="1"/>
+        <line num="159" type="stmt" count="1"/>
+        <line num="173" type="method" name="where" crap="1" count="2"/>
+        <line num="175" type="stmt" count="2"/>
+        <line num="176" type="stmt" count="2"/>
+        <line num="177" type="stmt" count="2"/>
+        <line num="178" type="stmt" count="2"/>
+        <line num="180" type="stmt" count="2"/>
+        <line num="181" type="stmt" count="2"/>
+        <line num="195" type="method" name="or_where" crap="2" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="198" type="stmt" count="0"/>
+        <line num="211" type="method" name="join" crap="2" count="0"/>
+        <line num="213" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="0"/>
+        <line num="224" type="method" name="orderby" crap="1" count="1"/>
+        <line num="226" type="stmt" count="1"/>
+        <line num="227" type="stmt" count="1"/>
+        <line num="237" type="method" name="groupby" crap="2" count="0"/>
+        <line num="239" type="stmt" count="0"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="252" type="method" name="limit" crap="1" count="1"/>
+        <line num="254" type="stmt" count="1"/>
+        <line num="255" type="stmt" count="1"/>
+        <line num="264" type="method" name="run" crap="7.33" count="2"/>
+        <line num="266" type="stmt" count="2"/>
+        <line num="267" type="stmt" count="0"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="269" type="stmt" count="0"/>
+        <line num="270" type="stmt" count="2"/>
+        <line num="271" type="stmt" count="2"/>
+        <line num="272" type="stmt" count="0"/>
+        <line num="273" type="stmt" count="0"/>
+        <line num="274" type="stmt" count="0"/>
+        <line num="275" type="stmt" count="2"/>
+        <line num="276" type="stmt" count="1"/>
+        <line num="277" type="stmt" count="1"/>
+        <line num="278" type="stmt" count="1"/>
+        <line num="279" type="stmt" count="2"/>
+        <line num="280" type="stmt" count="1"/>
+        <line num="281" type="stmt" count="1"/>
+        <line num="282" type="stmt" count="1"/>
+        <line num="285" type="stmt" count="2"/>
+        <line num="287" type="stmt" count="2"/>
+        <line num="288" type="stmt" count="0"/>
+        <line num="291" type="stmt" count="2"/>
+        <line num="299" type="method" name="get_where" crap="9.29" count="4"/>
+        <line num="301" type="stmt" count="4"/>
+        <line num="302" type="stmt" count="2"/>
+        <line num="303" type="stmt" count="2"/>
+        <line num="304" type="stmt" count="2"/>
+        <line num="305" type="stmt" count="2"/>
+        <line num="306" type="stmt" count="0"/>
+        <line num="307" type="stmt" count="0"/>
+        <line num="308" type="stmt" count="2"/>
+        <line num="310" type="stmt" count="2"/>
+        <line num="311" type="stmt" count="2"/>
+        <line num="312" type="stmt" count="2"/>
+        <line num="313" type="stmt" count="2"/>
+        <line num="314" type="stmt" count="4"/>
+        <line num="323" type="method" name="insert" crap="1" count="1"/>
+        <line num="325" type="stmt" count="1"/>
+        <line num="326" type="stmt" count="1"/>
+        <line num="336" type="method" name="set" crap="2" count="2"/>
+        <line num="338" type="stmt" count="2"/>
+        <line num="339" type="stmt" count="2"/>
+        <line num="340" type="stmt" count="2"/>
+        <line num="341" type="stmt" count="2"/>
+        <line num="342" type="stmt" count="2"/>
+        <line num="343" type="stmt" count="2"/>
+        <line num="344" type="stmt" count="2"/>
+        <line num="345" type="stmt" count="2"/>
+        <line num="346" type="stmt" count="2"/>
+        <line num="347" type="stmt" count="2"/>
+        <line num="348" type="stmt" count="2"/>
+        <line num="356" type="method" name="lastId" crap="1" count="1"/>
+        <line num="358" type="stmt" count="1"/>
+        <line num="368" type="method" name="update" crap="1" count="1"/>
+        <line num="370" type="stmt" count="1"/>
+        <line num="371" type="stmt" count="1"/>
+        <line num="381" type="method" name="delete" crap="1" count="1"/>
+        <line num="383" type="stmt" count="1"/>
+        <line num="384" type="stmt" count="1"/>
+        <line num="392" type="method" name="done" crap="1" count="1"/>
+        <line num="394" type="stmt" count="1"/>
+        <line num="395" type="stmt" count="1"/>
+        <line num="396" type="stmt" count="1"/>
+        <line num="404" type="method" name="total" crap="11.30" count="1"/>
+        <line num="406" type="stmt" count="1"/>
+        <line num="407" type="stmt" count="0"/>
+        <line num="408" type="stmt" count="0"/>
+        <line num="409" type="stmt" count="0"/>
+        <line num="410" type="stmt" count="1"/>
+        <line num="411" type="stmt" count="1"/>
+        <line num="412" type="stmt" count="0"/>
+        <line num="413" type="stmt" count="0"/>
+        <line num="414" type="stmt" count="0"/>
+        <line num="415" type="stmt" count="1"/>
+        <line num="416" type="stmt" count="0"/>
+        <line num="417" type="stmt" count="0"/>
+        <line num="418" type="stmt" count="0"/>
+        <line num="419" type="stmt" count="1"/>
+        <line num="420" type="stmt" count="0"/>
+        <line num="421" type="stmt" count="0"/>
+        <line num="422" type="stmt" count="0"/>
+        <line num="423" type="stmt" count="1"/>
+        <line num="424" type="stmt" count="1"/>
+        <line num="438" type="method" name="pagination" crap="3" count="1"/>
+        <line num="440" type="stmt" count="1"/>
+        <line num="441" type="stmt" count="1"/>
+        <line num="442" type="stmt" count="1"/>
+        <line num="443" type="stmt" count="1"/>
+        <line num="444" type="stmt" count="1"/>
+        <line num="446" type="stmt" count="1"/>
+        <line num="447" type="stmt" count="1"/>
+        <line num="448" type="stmt" count="1"/>
+        <line num="458" type="method" name="showPagination" crap="42" count="0"/>
+        <line num="460" type="stmt" count="0"/>
+        <line num="461" type="stmt" count="0"/>
+        <line num="462" type="stmt" count="0"/>
+        <line num="463" type="stmt" count="0"/>
+        <line num="464" type="stmt" count="0"/>
+        <line num="465" type="stmt" count="0"/>
+        <line num="466" type="stmt" count="0"/>
+        <line num="467" type="stmt" count="0"/>
+        <line num="468" type="stmt" count="0"/>
+        <line num="470" type="stmt" count="0"/>
+        <line num="477" type="method" name="nextPage" crap="6" count="0"/>
+        <line num="479" type="stmt" count="0"/>
+        <line num="487" type="method" name="prevPage" crap="6" count="0"/>
+        <line num="489" type="stmt" count="0"/>
+        <line num="497" type="method" name="getSqlString" crap="2" count="0"/>
+        <line num="499" type="stmt" count="0"/>
+        <metrics loc="501" ncloc="250" classes="1" methods="23" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="120" coveredstatements="80" elements="143" coveredelements="93"/>
+      </file>
+    </package>
+    <package name="PhpParser">
+      <file name="/Users/mtkocak/Working/basicDB/vendor/nikic/php-parser/lib/PhpParser/Autoloader.php">
+        <class name="Autoloader" namespace="PhpParser">
+          <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="275" ncloc="252" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+    </package>
+    <metrics files="2" loc="776" ncloc="502" classes="2" methods="23" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="120" coveredstatements="80" elements="143" coveredelements="93"/>
+  </project>
+</coverage>

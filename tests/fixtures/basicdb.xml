@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="test">
+        <table_data name="users">
+            <row>
+                <field name="username">username</field>
+                <field name="password">very_secret</field>
+                <field name="email">test@example.com</field>
+                <!-- ... -->
+            </row>
+            <row>
+                <field name="username">username_2</field>
+                <field name="password">very_secret_2</field>
+                <field name="email">test@example.com_2</field>
+                <!-- ... -->
+            </row>
+            <row>
+                <field name="username">another user</field>
+                <field name="password">very_secret_3</field>
+                <field name="email">test@example.com_3</field>
+                <!-- ... -->
+            </row>
+        </table_data>
+    </database>
+</mysqldump>
