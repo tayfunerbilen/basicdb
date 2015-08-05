@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <file name="Autoloader.php">
+    <totals>
+      <lines total="275" comments="23" code="252" executable="0" executed="0" percent=""/>
+      <methods count="0" tested="0" percent=""/>
+      <functions count="0" tested="0" percent=""/>
+      <classes count="1" tested="1" percent="100.00%"/>
+      <traits count="0" tested="0" percent=""/>
+    </totals>
+    <class name="Autoloader" start="8" executable="0" executed="0" crap="13">
+      <package full="" name="" sub="" category=""/>
+      <namespace name="PhpParser"/>
+      <method name="register" signature="register($prepend = false)" start="21" end="29" crap="2" executable="0" executed="0" coverage="100"/>
+      <method name="autoload" signature="autoload($class)" start="36" end="65" crap="9" executable="0" executed="0" coverage="100"/>
+      <method name="registerNonNamespacedAliases" signature="registerNonNamespacedAliases()" start="67" end="71" crap="2" executable="0" executed="0" coverage="100"/>
+    </class>
+  </file>
+</phpunit>

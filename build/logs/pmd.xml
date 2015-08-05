@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pmd version="@project.version@" timestamp="2015-08-05T11:02:39+02:00">
+  <file name="/Users/mtkocak/Working/basicDB/src/BasicDB.php">
+    <violation beginline="16" endline="501" rule="ExcessiveClassComplexity" ruleset="Code Size Rules" package="Erbilen\Database" externalInfoUrl="http://phpmd.org/rules/codesize.html#excessiveclasscomplexity" class="BasicDB" priority="3">
+      The class BasicDB has an overall complexity of 50 which is very high. The configured complexity threshold is 50.
+    </violation>
+    <violation beginline="195" endline="199" rule="CamelCaseMethodName" ruleset="Controversial Rules" package="Erbilen\Database" externalInfoUrl="#" class="BasicDB" method="or_where" priority="1">
+      The method or_where is not named in camelCase.
+    </violation>
+    <violation beginline="299" endline="314" rule="CamelCaseMethodName" ruleset="Controversial Rules" package="Erbilen\Database" externalInfoUrl="#" class="BasicDB" method="get_where" priority="1">
+      The method get_where is not named in camelCase.
+    </violation>
+    <violation beginline="438" endline="449" rule="Superglobals" ruleset="Controversial Rules" package="Erbilen\Database" externalInfoUrl="#" class="BasicDB" method="pagination" priority="1">
+      pagination accesses the super-global variable $_GET.
+    </violation>
+    <violation beginline="438" endline="449" rule="Superglobals" ruleset="Controversial Rules" package="Erbilen\Database" externalInfoUrl="#" class="BasicDB" method="pagination" priority="1">
+      pagination accesses the super-global variable $_GET.
+    </violation>
+    <violation beginline="438" endline="449" rule="Superglobals" ruleset="Controversial Rules" package="Erbilen\Database" externalInfoUrl="#" class="BasicDB" method="pagination" priority="1">
+      pagination accesses the super-global variable $_GET.
+    </violation>
+  </file>
+  <file name="/Users/mtkocak/Working/basicDB/src/CrudableAdapter.php">
+    <violation beginline="14" endline="14" rule="UnusedLocalVariable" ruleset="Unused Code Rules" externalInfoUrl="http://phpmd.org/rules/unusedcode.html#unusedlocalvariable" priority="3">
+      Avoid unused local variables such as '$query'.
+    </violation>
+  </file>
+</pmd>
