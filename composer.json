@@ -5,6 +5,7 @@
     "keywords": ["db","pdo","oop"],
     "homepage": "http://github.com/tayfunerbilen/BasicDB",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Tayfun Erbilen",
