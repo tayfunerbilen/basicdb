@@ -139,9 +139,9 @@ class BasicDB extends \PDO
      *            $tableName
      * @return $this
      */
-    public function select($tableName)
+    public function select($tableName,$columnName = '*')
     {
-        $this->sql = 'SELECT * FROM `' . $tableName . '`';
+        $this->sql = 'SELECT '.$columnName.' FROM `' . $tableName . '`';
         $this->tableName = $tableName;
         return $this;
     }
