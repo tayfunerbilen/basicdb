@@ -7,12 +7,8 @@ require 'BasicDB.php';
 $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
 
 // select
-$query = $db->select('post')
-            ->join('users', '%s.user_id = %s.post_userid', 'left')
-            ->where('post_approval', 1)
-            ->or_where('post_approval', 2)
+$query = $db->from('post')
             ->orderby('post_id', 'desc')
-            ->groupby('post_user')
             ->limit(0, 10)
             ->run();
    
