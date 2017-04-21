@@ -7,15 +7,15 @@ require 'BasicDB.php';
 $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
 
 // pagination example
-$totalRecord = $db->select('users')
-                  ->from('count(user_id) as total')
+$totalRecord = $db->from('users')
+                  ->select('count(user_id) as total')
                   ->total();
 
 $pageLimit = 4;
 $pageParam = 'page';
 $pagination = $db->pagination($totalRecord, $pageLimit, $pageParam);
 
-$query = $db->select('users')
+$query = $db->from('users')
             ->orderby('user_id', 'DESC')
             ->limit($pagination['start'], $pagination['limit'])
             ->run();
