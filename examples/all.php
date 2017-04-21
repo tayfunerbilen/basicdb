@@ -13,6 +13,36 @@ $db->from('table_name')
 // single select query
 $db->from('table_name')
   ->first();
+
+// join
+$db->from('table_name')
+  ->join('other_table', '%s.other_table_id = %s.table_id')
+  ->run();
+
+// left join
+$db->from('table_name')
+  ->left_join('other_table', '%s.other_table_id = %s.table_id')
+  ->run();
+
+// right join
+$db->from('table_name')
+  ->right_join('other_table', '%s.other_table_id = %s.table_id')
+  ->run();
+
+// orderby
+$db->from('table_name')
+  ->orderby('column_name', 'ASC')
+  ->run();
+
+// groupby
+$db->from('table_name')
+  ->groupby('column_name')
+  ->run();
+
+// limit
+$db->from('table_name')
+  ->limit(0, 20)
+  ->run();
   
 // with where..
 $db->from('table_name')
