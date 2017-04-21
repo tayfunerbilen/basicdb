@@ -14,6 +14,11 @@ $db->from('table_name')
 $db->from('table_name')
   ->first();
 
+// select
+$db->from('table_name')
+  ->select('column_name, column_name2')
+  ->first();
+
 // join
 $db->from('table_name')
   ->join('other_table', '%s.other_table_id = %s.table_id')
