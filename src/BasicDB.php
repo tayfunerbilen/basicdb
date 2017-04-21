@@ -15,7 +15,6 @@ namespace Erbilen\Database;
  */
 class BasicDB extends \PDO
 {
-
     /**
      * Built SQL Query
      *
@@ -23,7 +22,6 @@ class BasicDB extends \PDO
      *
      */
     private $sql;
-
     /**
      * Table Name
      *
@@ -31,7 +29,6 @@ class BasicDB extends \PDO
      *
      */
     private $tableName;
-
     /**
      * Condittions
      *
@@ -39,7 +36,6 @@ class BasicDB extends \PDO
      *
      */
     private $where;
-
     /**
      * Join Rules
      *
@@ -47,7 +43,6 @@ class BasicDB extends \PDO
      *
      */
     private $join;
-
     /**
      * OrderBy Value
      *
@@ -55,7 +50,6 @@ class BasicDB extends \PDO
      *
      */
     private $orderBy;
-
     /**
      * GroupBy Value
      *
@@ -63,7 +57,6 @@ class BasicDB extends \PDO
      *
      */
     private $groupBy;
-
     /**
      * Limit Value
      *
@@ -71,7 +64,6 @@ class BasicDB extends \PDO
      *
      */
     private $limit;
-
     /**
      * $_GET[] parameter
      *
@@ -79,7 +71,6 @@ class BasicDB extends \PDO
      *
      */
     private $page;
-
     /**
      * Row Count
      *
@@ -87,7 +78,6 @@ class BasicDB extends \PDO
      *
      */
     private $totalRecord;
-
     /**
      * Page Count
      *
@@ -95,7 +85,6 @@ class BasicDB extends \PDO
      *
      */
     private $pageCount;
-
     /**
      * Pagination Limit
      *
@@ -103,7 +92,6 @@ class BasicDB extends \PDO
      *
      */
     private $paginationLimit;
-
     /**
      * HTML generated
      *
@@ -123,7 +111,7 @@ class BasicDB extends \PDO
      *            $username
      * @param
      *            $password
-     * @param string $charset            
+     * @param string $charset
      */
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
     {
@@ -166,18 +154,18 @@ class BasicDB extends \PDO
      *            $column
      * @param
      *            $value
-     * @param string $mark            
-     * @param bool $filter            
+     * @param string $mark
+     * @param bool $filter
      * @return $this
      */
     public function where($column, $value = '', $mark = '=', $logical = '&&')
     {
-        $this->where[] = array(
+        $this->where[] = [
             $column,
             $value,
             $mark,
             $logical
-        );
+        ];
         return $this;
     }
 
@@ -205,7 +193,7 @@ class BasicDB extends \PDO
      *            $targetTable
      * @param
      *            $joinSql
-     * @param string $joinType            
+     * @param string $joinType
      * @return $this
      */
     public function join($targetTable, $joinSql, $joinType = 'inner')
@@ -219,7 +207,7 @@ class BasicDB extends \PDO
      *
      * @param
      *            $columnName
-     * @param string $sort            
+     * @param string $sort
      */
     public function orderby($columnName, $sort = 'ASC')
     {
@@ -258,10 +246,22 @@ class BasicDB extends \PDO
     /**
      * Used for running Insert/Update/Select operations.
      *
-     * @param bool $single            
+     * @param bool $single
      * @return array|mixed
      */
-    public function run($single = false)
+    public function run()
+    {
+        $query = $this->generateQuery();
+        return $query->fetchAll(parent::FETCH_ASSOC);
+    }
+
+    public function first()
+    {
+        $query = $this->generateQuery();
+        return $query->fetch(parent::FETCH_ASSOC);
+    }
+
+    public function generateQuery()
     {
         if ($this->join) {
             $this->sql .= implode(' ', $this->join);
@@ -280,17 +280,8 @@ class BasicDB extends \PDO
             $this->sql .= $this->limit;
             $this->limit = null;
         }
-        
-        
         $query = $this->query($this->sql);
-        
-        if ($single){
-            return $query->fetch(parent::FETCH_ASSOC);
-        }
-        else{
-            return $query->fetchAll(parent::FETCH_ASSOC);
-        }
-            
+        return $query;
     }
 
     /**
@@ -300,13 +291,30 @@ class BasicDB extends \PDO
     {
         if (is_array($this->where) && count($this->where) > 0) {
             $this->sql .= ' WHERE ';
-            $where = array();
+            $where = [];
             foreach ($this->where as $key => $arg) {
-                if (strstr($arg[1], 'FIND_IN_SET')) {
-                    $where[] = ($key > 0 ? $arg[3] : null) . $arg[1];
-                } else {
-                    $where[] = ($key > 0 ? $arg[3] : null) . ' `' . $arg[0] . '` ' . strtoupper($arg[2]) . ' ' . (strstr($arg[2], 'IN') ? '(' : '"') . $arg[1] . (strstr($arg[2], 'IN') ? ')' : '"');
+
+
+                Switch ($arg[2]) {
+
+                    case strstr($arg[2], 'BETWEEN'):
+                        $where[] = ($arg[0] . ' ' . $arg[2] . ' ' . $arg[1][0] . ' AND ' . $arg[1][1]);
+                        break;
+
+                    case 'FIND_IN_SET':
+                        $where[] = 'FIND_IN_SET("' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . '", ' . $arg[0] . ')';
+                        break;
+
+                    case 'IN' || 'NOT IN':
+                        $where[] = $arg[0] . ' ' . $arg[2] . '(' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . ')';
+                        break;
+
+                    default:
+                        $where[] = ($arg[0]) . ' ' . $arg[2] . ' ' . $arg[1];
+                        break;
+
                 }
+
             }
             $this->sql .= implode(' ', $where);
             $this->where = null;
@@ -335,8 +343,8 @@ class BasicDB extends \PDO
      */
     public function set($columns)
     {
-        $val = array();
-        $col = array();
+        $val = [];
+        $col = [];
         foreach ($columns as $column => $value) {
             $val[] = $value;
             $col[] = $column . ' = ? ';
@@ -442,10 +450,10 @@ class BasicDB extends \PDO
         $this->totalRecord = $totalRecord;
         $this->pageCount = ceil($this->totalRecord / $this->paginationLimit);
         $start = ($this->page * $this->paginationLimit) - $this->paginationLimit;
-        return array(
+        return [
             'start' => $start,
             'limit' => $this->paginationLimit
-        );
+        ];
     }
 
     /**
@@ -458,7 +466,7 @@ class BasicDB extends \PDO
     public function showPagination($url, $class = 'active')
     {
         if ($this->totalRecord > $this->paginationLimit) {
-            for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i ++) {
+            for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i++) {
                 if ($i > 0 && $i <= $this->pageCount) {
                     $this->html .= '<li class="';
                     $this->html .= ($i == $this->page ? $class : null);
@@ -498,4 +506,35 @@ class BasicDB extends \PDO
     {
         return $this->sql;
     }
+
+    public function between($column, $values = [])
+    {
+        $this->where($column, $values, 'BETWEEN');
+        return $this;
+    }
+
+    public function not_between($column, $values = [])
+    {
+        $this->where($column, $values, 'NOT BETWEEN');
+        return $this;
+    }
+
+    public function find_in_set($column, $value)
+    {
+        $this->where($column, $value, 'FIND_IN_SET');
+        return $this;
+    }
+
+    public function in($column, $value)
+    {
+        $this->where($column, $value, 'IN');
+        return $this;
+    }
+
+    public function not_in($column, $value)
+    {
+        $this->where($column, $value, 'NOT IN');
+        return $this;
+    }
+
 }
