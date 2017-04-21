@@ -127,7 +127,7 @@ class BasicDB extends \PDO
      *            $tableName
      * @return $this
      */
-    public function select($tableName)
+    public function from($tableName)
     {
         $this->sql = 'SELECT * FROM `' . $tableName . '`';
         $this->tableName = $tableName;
@@ -141,7 +141,7 @@ class BasicDB extends \PDO
      *            $from
      * @return $this
      */
-    public function from($from)
+    public function select($from)
     {
         $this->sql = str_replace('*', $from, $this->sql);
         return $this;
