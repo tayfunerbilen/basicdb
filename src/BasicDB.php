@@ -294,29 +294,20 @@ class BasicDB extends \PDO
             $where = [];
             foreach ($this->where as $key => $arg) {
 
-
-                Switch ($arg[2]) {
-
-                    case strstr($arg[2], 'BETWEEN'):
-                        $where[] = ($arg[0] . ' ' . $arg[2] . ' ' . $arg[1][0] . ' AND ' . $arg[1][1]);
-                        break;
-
-                    case 'FIND_IN_SET':
-                        $where[] = 'FIND_IN_SET("' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . '", ' . $arg[0] . ')';
-                        break;
-
-                    case 'IN' || 'NOT IN':
-                        $where[] = $arg[0] . ' ' . $arg[2] . '(' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . ')';
-                        break;
-
-                    default:
-                        $where[] = ($arg[0]) . ' ' . $arg[2] . ' ' . $arg[1];
-                        break;
-
+                if ($arg[2] == 'LIKE' || $arg[2] == 'NOT LIKE') {
+                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' "%' . $arg[1] . '%" ';
+                } elseif ($arg[2] == 'BETWEEN' || $arg[2] == 'NOT BETWEEN') {
+                    $where[] = $arg[3] . ' ' . ($arg[0] . ' ' . $arg[2] . ' ' . $arg[1][0] . ' AND ' . $arg[1][1]);
+                } elseif ($arg[2] == 'FIND_IN_SET') {
+                    $where[] = $arg[3] . ' FIND_IN_SET("' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . '", ' . $arg[0] . ')';
+                } elseif ($arg[2] == 'IN' || $arg[2] == 'NOT IN') {
+                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . '(' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . ')';
+                } else {
+                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' ' . $arg[1];
                 }
 
             }
-            $this->sql .= implode(' ', $where);
+            $this->sql .= ltrim(implode(' ', $where), '&&');
             $this->where = null;
         }
     }
@@ -534,6 +525,18 @@ class BasicDB extends \PDO
     public function not_in($column, $value)
     {
         $this->where($column, $value, 'NOT IN');
+        return $this;
+    }
+
+    public function like($column, $value)
+    {
+        $this->where($column, $value, 'LIKE');
+        return $this;
+    }
+
+    public function not_like($column, $value)
+    {
+        $this->where($column, $value, 'NOT LIKE');
         return $this;
     }
 
