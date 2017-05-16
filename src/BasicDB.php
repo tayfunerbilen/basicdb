@@ -303,7 +303,7 @@ class BasicDB extends \PDO
                 } elseif ($arg[2] == 'IN' || $arg[2] == 'NOT IN') {
                     $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . '(' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . ')';
                 } else {
-                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' ' . $arg[1];
+                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' "' . $arg[1] . '"';
                 }
 
             }
