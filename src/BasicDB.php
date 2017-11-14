@@ -495,7 +495,8 @@ class BasicDB extends \PDO
      * @return mixed
      */
     public function getSqlString()
-    {
+    {   
+        $this->get_where();
         return $this->sql;
     }
 }
