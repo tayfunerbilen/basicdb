@@ -49,6 +49,13 @@ class BasicDB extends \PDO
      * @var
      *
      */
+    private $rand;
+    /**
+     * OrderBy Rand()
+     *
+     * @var
+     *
+     */
     private $orderBy;
     /**
      * GroupBy Value
@@ -201,6 +208,20 @@ class BasicDB extends \PDO
         $this->join[] = ' ' . strtoupper($joinType) . ' JOIN ' . $targetTable . ' ON ' . sprintf($joinSql, $targetTable, $this->tableName);
         return $this;
     }
+     
+    /**
+     * Defines random operation in sql query
+     * 
+     * @param
+     *            $limit
+     * Default
+     *            5
+     * @return $this
+     */
+    public function rand($limit = 5){
+       $this->rand = ' ORDER BY rand() LIMIT ' .$limit;
+       return $this;
+    }
 
     /**
      * Defines -orderby- operation in sql query
@@ -274,6 +295,10 @@ class BasicDB extends \PDO
         }
         if ($this->orderBy) {
             $this->sql .= $this->orderBy;
+            $this->orderBy = null;
+        }
+        if ($this->rand) {
+            $this->sql .= $this->rand;
             $this->orderBy = null;
         }
         if ($this->limit) {
