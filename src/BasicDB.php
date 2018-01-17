@@ -249,7 +249,7 @@ class BasicDB extends \PDO
      * @param bool $single
      * @return array|mixed
      */
-    public function run()
+    public function all()
     {
         $query = $this->generateQuery();
         return $query->fetchAll(parent::FETCH_ASSOC);
