@@ -18,7 +18,7 @@ $pagination = $db->pagination($totalRecord, $pageLimit, $pageParam);
 $query = $db->from('users')
             ->orderby('user_id', 'DESC')
             ->limit($pagination['start'], $pagination['limit'])
-            ->run();
+            ->all();
 
 print_r($query);
 
