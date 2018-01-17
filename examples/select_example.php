@@ -10,7 +10,7 @@ $db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
 $query = $db->from('post')
             ->orderby('post_id', 'desc')
             ->limit(0, 10)
-            ->run();
+            ->all();
    
 if ( $query ){
   foreach ( $query as $row ){
