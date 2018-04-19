@@ -1,10 +1,10 @@
 <?php
 
 // class file
-require 'BasicDB.php';
+require '../src/BasicDB.php';
 
 // connection
-$db = new BasicDB('localhost', 'testdb', 'testuser', 'password');
+$db = new Erbilen\Database\BasicDB('localhost', 'testdb', 'testuser', 'password');
 
 // select
 $query = $db->from('post')
