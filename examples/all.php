@@ -44,6 +44,11 @@ $db->from('table_name')
   ->groupby('column_name')
   ->run();
 
+//random
+$db->from('table_name')
+  ->rand()
+  ->run();
+
 // limit
 $db->from('table_name')
   ->limit(0, 20)
