@@ -192,11 +192,11 @@ class BasicDB extends \PDO
             $this->sql .= $this->limit;
             $this->limit = null;
         }
-        if ($this->debug) {
-            echo $this->getSqlString();
-        }
         if ($this->type == 'union') {
             $this->sql = $this->unionSql . ' UNION ALL ' . $this->sql;
+        }
+        if ($this->debug) {
+            echo $this->getSqlString();
         }
         $query = $this->query($this->sql);
         return $query;
