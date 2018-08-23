@@ -20,8 +20,10 @@ class BasicDB extends \PDO
 
     private $type;
     private $sql;
+    private $unionSql;
     private $tableName;
     private $where;
+    private $having;
     private $grouped;
     private $group_id;
     private $join;
@@ -61,6 +63,13 @@ class BasicDB extends \PDO
         return $this;
     }
 
+    public function union()
+    {
+        $this->type = 'union';
+        $this->unionSql = $this->sql;
+        return $this;
+    }
+
     public function group(Closure $fn)
     {
         static $group_id = 0;
@@ -84,9 +93,28 @@ class BasicDB extends \PDO
         return $this;
     }
 
+    public function having($column, $value = '', $mark = '=', $logical = '&&')
+    {
+        $this->having[] = [
+            'column' => $column,
+            'value' => $value,
+            'mark' => $mark,
+            'logical' => $logical,
+            'grouped' => $this->grouped,
+            'group_id' => $this->group_id
+        ];
+        return $this;
+    }
+
     public function or_where($column, $value, $mark = '=')
     {
         $this->where($column, $value, $mark, '||');
+        return $this;
+    }
+
+    public function or_having($column, $value, $mark = '=')
+    {
+        $this->having($column, $value, $mark, '||');
         return $this;
     }
 
@@ -169,30 +197,37 @@ class BasicDB extends \PDO
         if ($this->debug) {
             echo $this->getSqlString();
         }
+        if ($this->type == 'union') {
+            $this->sql = $this->unionSql . ' UNION ALL ' . $this->sql;
+        }
         $query = $this->query($this->sql);
         return $query;
     }
 
     private function get_where()
     {
-        if (is_array($this->where) && count($this->where) > 0) {
-            $whereClause = ' WHERE ';
-            if (is_array($this->where)) {
-                foreach ($this->where as $key => $item) {
+        if (
+            (is_array($this->where) && count($this->where) > 0) ||
+            (is_array($this->having) && count($this->having) > 0)
+        ) {
+            $whereClause = ' ' . ($this->having ? 'HAVING' : 'WHERE') . ' ';
+            $arrs = $this->having ? $this->having : $this->where;
+            if (is_array($arrs)) {
+                foreach ($arrs as $key => $item) {
                     if (
                         $item['grouped'] === true &&
                         (
                             (
-                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] !== true) ||
-                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['group_id'] != $item['group_id'])
+                                (isset($arrs[$key - 1]) && $arrs[$key - 1]['grouped'] !== true) ||
+                                (isset($arrs[$key - 1]) && $arrs[$key - 1]['group_id'] != $item['group_id'])
                             ) ||
                             (
-                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] !== true) ||
-                                (!isset($this->where[$key - 1]))
+                                (isset($arrs[$key - 1]) && $arrs[$key - 1]['grouped'] !== true) ||
+                                (!isset($arrs[$key - 1]))
                             )
                         )
                     ) {
-                        $whereClause .= (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] == true ? ' ' . $item['logical'] : null) . ' (';
+                        $whereClause .= (isset($arrs[$key - 1]) && $arrs[$key - 1]['grouped'] == true ? ' ' . $item['logical'] : null) . ' (';
                     }
 
                     switch ($item['mark']) {
@@ -238,7 +273,7 @@ class BasicDB extends \PDO
                     if ($key == 0) {
                         if (
                             $item['grouped'] == false &&
-                            isset($this->where[$key + 1]['grouped']) == true
+                            isset($arrs[$key + 1]['grouped']) == true
                         ) {
                             $whereClause .= $where . ' ' . $item['logical'];
                         } else {
@@ -252,13 +287,13 @@ class BasicDB extends \PDO
                         $item['grouped'] === true &&
                         (
                             (
-                                (isset($this->where[$key + 1]) && $this->where[$key + 1]['grouped'] !== true) ||
-                                ($item['grouped'] === true && !isset($this->where[$key + 1]))
+                                (isset($arrs[$key + 1]) && $arrs[$key + 1]['grouped'] !== true) ||
+                                ($item['grouped'] === true && !isset($arrs[$key + 1]))
                             )
                             ||
                             (
-                                (isset($this->where[$key + 1]) && $this->where[$key + 1]['group_id'] != $item['group_id']) ||
-                                ($item['grouped'] === true && !isset($this->where[$key + 1]))
+                                (isset($arrs[$key + 1]) && $arrs[$key + 1]['group_id'] != $item['group_id']) ||
+                                ($item['grouped'] === true && !isset($arrs[$key + 1]))
                             )
                         )
                     ) {
@@ -271,7 +306,9 @@ class BasicDB extends \PDO
             $whereClause = preg_replace('/\(\s+(\|\||&&)/', '(', $whereClause);
             $whereClause = preg_replace('/(\|\||&&)\s+\)/', ')', $whereClause);
             $this->sql .= $whereClause;
+            $this->unionSql .= $whereClause;
             $this->where = null;
+            $this->having = null;
         }
     }
 
