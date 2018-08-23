@@ -57,7 +57,7 @@ class BasicDB extends \PDO
 
     public function select($from)
     {
-        $this->sql = str_replace('*', $from, $this->sql);
+        $this->sql = str_replace(' * ', $from, $this->sql);
         return $this;
     }
 
