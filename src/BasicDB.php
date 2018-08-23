@@ -96,6 +96,18 @@ class BasicDB extends \PDO
         return $this;
     }
 
+    public function leftJoin($targetTable, $joinSql)
+    {
+        $this->join($targetTable, $joinSql, 'left');
+        return $this;
+    }
+
+    public function rightJoin($targetTable, $joinSql)
+    {
+        $this->join($targetTable, $joinSql, 'right');
+        return $this;
+    }
+
     public function orderBy($columnName, $sort = 'ASC')
     {
         $this->orderBy = ' ORDER BY ' . $columnName . ' ' . strtoupper($sort);
