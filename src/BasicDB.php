@@ -329,9 +329,13 @@ class BasicDB extends \PDO
 
     public function done()
     {
-        $this->get_where();
-        $query = $this->exec($this->sql);
-        return $query;
+        try {
+            $this->get_where();
+            $query = $this->exec($this->sql);
+            return $query;
+        } catch (PDOException $e) {
+            $this->showError($e);
+        }
     }
 
     public function total()
@@ -472,7 +476,7 @@ class BasicDB extends \PDO
                 padding: 15px;
                 border-left: 5px solid #c00000;
                 background: rgba(192, 0, 0, 0.06);
-                background: #fff;
+                background: #f8f8f8;
                 margin-bottom: 10px;
             }
 
