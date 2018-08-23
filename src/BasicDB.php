@@ -1,132 +1,53 @@
 <?php
 
 namespace Erbilen\Database;
+
 /**
  * Class BasicDB
- * 
+ *
  * @author Tayfun Erbilen
- *         @web http://www.erbilen.net
- *         @mail tayfunerbilen@gmail.com
- *         @web http://www.mtkocak.com
- *         @mail mtkocak@gmail.com
- *         @date 13 Nisan 2014
+ * @web http://www.erbilen.net
+ * @mail tayfunerbilen@gmail.com
+ * @web http://www.mtkocak.com
+ * @mail mtkocak@gmail.com
+ * @date 13 April 2014
+ * @update 23 August 2018
  * @author Midori Koçak
- *         @update 2 July 2015
+ * @update 2 July 2015
  */
 class BasicDB extends \PDO
 {
-    /**
-     * Built SQL Query
-     *
-     * @var
-     *
-     */
-    private $sql;
-    /**
-     * Table Name
-     *
-     * @var
-     *
-     */
-    private $tableName;
-    /**
-     * Condittions
-     *
-     * @var
-     *
-     */
-    private $where;
-    /**
-     * Join Rules
-     *
-     * @var
-     *
-     */
-    private $join;
-    /**
-     * OrderBy Value
-     *
-     * @var
-     *
-     */
-    private $orderBy;
-    /**
-     * GroupBy Value
-     *
-     * @var
-     *
-     */
-    private $groupBy;
-    /**
-     * Limit Value
-     *
-     * @var
-     *
-     */
-    private $limit;
-    /**
-     * $_GET[] parameter
-     *
-     * @var
-     *
-     */
-    private $page;
-    /**
-     * Row Count
-     *
-     * @var
-     *
-     */
-    private $totalRecord;
-    /**
-     * Page Count
-     *
-     * @var
-     *
-     */
-    private $pageCount;
-    /**
-     * Pagination Limit
-     *
-     * @var
-     *
-     */
-    private $paginationLimit;
-    /**
-     * HTML generated
-     *
-     * @var
-     *
-     */
-    private $html;
 
-    /**
-     * BasicDB Constructor
-     *
-     * @param
-     *            $host
-     * @param
-     *            $dbname
-     * @param
-     *            $username
-     * @param
-     *            $password
-     * @param string $charset
-     */
+    private $type;
+    private $sql;
+    private $tableName;
+    private $where;
+    private $grouped;
+    private $group_id;
+    private $join;
+    private $orderBy;
+    private $groupBy;
+    private $limit;
+    private $page;
+    private $totalRecord;
+    private $pageCount;
+    private $paginationLimit;
+    private $html;
+    public $debug = false;
+
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
     {
-        parent::__construct('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
-        $this->query('SET CHARACTER SET ' . $charset);
-        $this->query('SET NAMES ' . $charset);
+        try {
+            parent::__construct('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
+            $this->query('SET CHARACTER SET ' . $charset);
+            $this->query('SET NAMES ' . $charset);
+            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        } catch (PDOException $e) {
+            $this->showError($e);
+        }
     }
 
-    /**
-     * Defines select table operation in sql query
-     *
-     * @param
-     *            $tableName
-     * @return $this
-     */
     public function from($tableName)
     {
         $this->sql = 'SELECT * FROM `' . $tableName . '`';
@@ -134,125 +55,74 @@ class BasicDB extends \PDO
         return $this;
     }
 
-    /**
-     * Defines select row operation in sql query
-     *
-     * @param
-     *            $from
-     * @return $this
-     */
     public function select($from)
     {
         $this->sql = str_replace('*', $from, $this->sql);
         return $this;
     }
 
-    /**
-     * WHERE value at SQL query
-     *
-     * @param
-     *            $column
-     * @param
-     *            $value
-     * @param string $mark
-     * @param bool $filter
-     * @return $this
-     */
+    public function group(Closure $fn)
+    {
+        static $group_id = 0;
+        $this->grouped = true;
+        call_user_func_array($fn, [$this]);
+        $this->group_id = ++$group_id;
+        $this->grouped = false;
+        return $this;
+    }
+
     public function where($column, $value = '', $mark = '=', $logical = '&&')
     {
         $this->where[] = [
-            $column,
-            $value,
-            $mark,
-            $logical
+            'column' => $column,
+            'value' => $value,
+            'mark' => $mark,
+            'logical' => $logical,
+            'grouped' => $this->grouped,
+            'group_id' => $this->group_id
         ];
         return $this;
     }
 
-    /**
-     * Defines -or where- operation in sql query
-     *
-     * @param
-     *            $column
-     * @param
-     *            $value
-     * @param
-     *            $mark
-     * @return $this
-     */
     public function or_where($column, $value, $mark = '=')
     {
         $this->where($column, $value, $mark, '||');
         return $this;
     }
 
-    /**
-     * Defines -join- operation in sql query
-     *
-     * @param
-     *            $targetTable
-     * @param
-     *            $joinSql
-     * @param string $joinType
-     * @return $this
-     */
     public function join($targetTable, $joinSql, $joinType = 'inner')
     {
         $this->join[] = ' ' . strtoupper($joinType) . ' JOIN ' . $targetTable . ' ON ' . sprintf($joinSql, $targetTable, $this->tableName);
         return $this;
     }
 
-    /**
-     * Defines -orderby- operation in sql query
-     *
-     * @param
-     *            $columnName
-     * @param string $sort
-     */
-    public function orderby($columnName, $sort = 'ASC')
+    public function orderBy($columnName, $sort = 'ASC')
     {
         $this->orderBy = ' ORDER BY ' . $columnName . ' ' . strtoupper($sort);
         return $this;
     }
 
-    /**
-     * Defines -groupby- operation in sql query
-     *
-     * @param
-     *            $columnName
-     * @return $this
-     */
-    public function groupby($columnName)
+    public function groupBy($columnName)
     {
         $this->groupBy = ' GROUP BY ' . $columnName;
         return $this;
     }
 
-    /**
-     * Defines -limit- operation in sql query
-     *
-     * @param
-     *            $start
-     * @param
-     *            $limit
-     * @return $this
-     */
     public function limit($start, $limit)
     {
         $this->limit = ' LIMIT ' . $start . ',' . $limit;
         return $this;
     }
 
-    /**
-     * Used for running Insert/Update/Select operations.
-     *
-     * @param bool $single
-     * @return array|mixed
-     */
     public function all()
     {
-        $query = $this->generateQuery();
-        return $query->fetchAll(parent::FETCH_ASSOC);
+        try {
+            $query = $this->generateQuery();
+            $result = $query->fetchAll(parent::FETCH_ASSOC);
+            return $result;
+        } catch (PDOException $e) {
+            $this->showError($e);
+        }
     }
 
     public function first()
@@ -280,114 +150,163 @@ class BasicDB extends \PDO
             $this->sql .= $this->limit;
             $this->limit = null;
         }
+        if ($this->debug) {
+            echo $this->getSqlString();
+        }
         $query = $this->query($this->sql);
         return $query;
     }
 
-    /**
-     * Runs where operation at query running.
-     */
     private function get_where()
     {
         if (is_array($this->where) && count($this->where) > 0) {
-            $this->sql .= ' WHERE ';
-            $where = [];
-            foreach ($this->where as $key => $arg) {
+            $whereClause = ' WHERE ';
+            if (is_array($this->where)) {
+                foreach ($this->where as $key => $item) {
+                    if (
+                        $item['grouped'] === true &&
+                        (
+                            (
+                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] !== true) ||
+                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['group_id'] != $item['group_id'])
+                            ) ||
+                            (
+                                (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] !== true) ||
+                                (!isset($this->where[$key - 1]))
+                            )
+                        )
+                    ) {
+                        $whereClause .= (isset($this->where[$key - 1]) && $this->where[$key - 1]['grouped'] == true ? ' ' . $item['logical'] : null) . ' (';
+                    }
 
-                if ($arg[2] == 'LIKE' || $arg[2] == 'NOT LIKE') {
-                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' "%' . $arg[1] . '%" ';
-                } elseif ($arg[2] == 'BETWEEN' || $arg[2] == 'NOT BETWEEN') {
-                    $where[] = $arg[3] . ' ' . ($arg[0] . ' ' . $arg[2] . ' ' . $arg[1][0] . ' AND ' . $arg[1][1]);
-                } elseif ($arg[2] == 'FIND_IN_SET') {
-                    $where[] = $arg[3] . ' FIND_IN_SET("' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . '", ' . $arg[0] . ')';
-                } elseif ($arg[2] == 'IN' || $arg[2] == 'NOT IN') {
-                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . '(' . (is_array($arg[1]) ? implode(',', $arg[1]) : $arg[1]) . ')';
-                } else {
-                    $where[] = $arg[3] . ' ' . $arg[0] . ' ' . $arg[2] . ' "' . $arg[1] . '"';
+                    switch ($item['mark']) {
+
+                        case 'LIKE':
+                            $where = $item['column'] . ' LIKE "%' . $item['value'] . '%"';
+                            break;
+
+                        case 'NOT LIKE':
+                            $where = $item['column'] . ' NOT LIKE "%' . $item['value'] . '%"';
+                            break;
+
+                        case 'BETWEEN':
+                            $where = $item['column'] . ' BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
+                            break;
+
+                        case 'NOT BETWEEN':
+                            $where = $item['column'] . ' NOT BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
+                            break;
+
+                        case 'FIND_IN_SET':
+                            $where = 'FIND_IN_SET("' . $item['value'] . '", ' . $item['column'] . ')';
+                            break;
+
+                        case 'IN':
+                            $where = $item['column'] . ' IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
+                            break;
+
+                        case 'NOT IN':
+                            $where = $item['column'] . ' NOT IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
+                            break;
+
+                        case 'SOUNDEX':
+                            $where = 'SOUNDEX(' . $item['column'] . ') LIKE CONCAT(\'%\', TRIM(TRAILING \'0\' FROM SOUNDEX(\'' . $item['value'] . '\')), \'%\')';
+                            break;
+
+                        default:
+                            $where = $item['column'] . ' ' . $item['mark'] . ' "' . $item['value'] . '"';
+                            break;
+
+                    }
+
+                    if ($key == 0) {
+                        if (
+                            $item['grouped'] == false &&
+                            isset($this->where[$key + 1]['grouped']) == true
+                        ) {
+                            $whereClause .= $where . ' ' . $item['logical'];
+                        } else {
+                            $whereClause .= $where;
+                        }
+                    } else {
+                        $whereClause .= ' ' . $item['logical'] . ' ' . $where;
+                    }
+
+                    if (
+                        $item['grouped'] === true &&
+                        (
+                            (
+                                (isset($this->where[$key + 1]) && $this->where[$key + 1]['grouped'] !== true) ||
+                                ($item['grouped'] === true && !isset($this->where[$key + 1]))
+                            )
+                            ||
+                            (
+                                (isset($this->where[$key + 1]) && $this->where[$key + 1]['group_id'] != $item['group_id']) ||
+                                ($item['grouped'] === true && !isset($this->where[$key + 1]))
+                            )
+                        )
+                    ) {
+                        $whereClause .= ' )';
+                    }
                 }
-
             }
-            $this->sql .= ltrim(implode(' ', $where), '&&');
+            $whereClause = rtrim($whereClause, '||');
+            $whereClause = rtrim($whereClause, '&&');
+            $whereClause = preg_replace('/\(\s+(\|\||&&)/', '(', $whereClause);
+            $whereClause = preg_replace('/(\|\||&&)\s+\)/', ')', $whereClause);
+            $this->sql .= $whereClause;
             $this->where = null;
         }
     }
 
-    /**
-     * Used for insert operation
-     *
-     * @param
-     *            $tableName
-     * @return $this
-     */
     public function insert($tableName)
     {
         $this->sql = 'INSERT INTO ' . $tableName;
         return $this;
     }
 
-    /**
-     * Used for setting data at insert operation.
-     *
-     * @param
-     *            $columns
-     * @return bool
-     */
-    public function set($columns)
+    public function set($data, $value = null)
     {
-        $val = [];
-        $col = [];
-        foreach ($columns as $column => $value) {
-            $val[] = $value;
-            $col[] = $column . ' = ? ';
+        if ($this->type == 'counter_update') {
+            $this->sql .= ' SET ' . $data . ' = ' . $data . ' ' . $value;
+        } else {
+            $this->sql .= ' SET ' . implode(', ', array_map(function ($item) {
+                    return $item . ' = :' . $item;
+                }, array_keys($data)));
         }
-        $this->sql .= ' SET ' . implode(', ', $col);
+
         $this->get_where();
+
         $query = $this->prepare($this->sql);
-        $result = $query->execute($val);
+        $result = $query->execute($value ? null : $data);
+
         return $result;
     }
 
-    /**
-     * Returns last added Id.
-     *
-     * @return string
-     */
     public function lastId()
     {
         return $this->lastInsertId();
     }
 
-    /**
-     * Used for update operation.
-     *
-     * @param
-     *            $columnName
-     * @return $this
-     */
-    public function update($columnName)
+    public function update($tableName)
     {
-        $this->sql = 'UPDATE ' . $columnName;
+        $this->sql = 'UPDATE ' . $tableName;
         return $this;
     }
 
-    /**
-     * Used for Delete operation
-     *
-     * @param
-     *            $columnName
-     * @return $this
-     */
-    public function delete($columnName)
+    public function counter_update($tableName)
     {
-        $this->sql = 'DELETE FROM ' . $columnName;
+        $this->type = __FUNCTION__;
+        $this->sql = 'UPDATE ' . $tableName;
         return $this;
     }
 
-    /**
-     * Used to complete delete operation.
-     *
-     * @return int
-     */
+    public function delete($tableName)
+    {
+        $this->sql = 'DELETE FROM ' . $tableName;
+        return $this;
+    }
+
     public function done()
     {
         $this->get_where();
@@ -395,11 +314,6 @@ class BasicDB extends \PDO
         return $query;
     }
 
-    /**
-     * Returns total result with -total- table name.
-     *
-     * @return mixed
-     */
     public function total()
     {
         if ($this->join) {
@@ -423,17 +337,6 @@ class BasicDB extends \PDO
         return $query['total'];
     }
 
-    /**
-     * Returns pagination start and limit values.
-     *
-     * @param
-     *            $totalRecord
-     * @param
-     *            $paginationLimit
-     * @param
-     *            $pageParamName
-     * @return array
-     */
     public function pagination($totalRecord, $paginationLimit, $pageParamName)
     {
         $this->paginationLimit = $paginationLimit;
@@ -447,13 +350,6 @@ class BasicDB extends \PDO
         ];
     }
 
-    /**
-     * Returns pagination
-     *
-     * @param
-     *            $url
-     * @return mixed
-     */
     public function showPagination($url, $class = 'active')
     {
         if ($this->totalRecord > $this->paginationLimit) {
@@ -468,34 +364,20 @@ class BasicDB extends \PDO
         }
     }
 
-    /**
-     * Returns next page at pagination operation.
-     *
-     * @return bool
-     */
     public function nextPage()
     {
         return ($this->page + 1 < $this->pageCount ? $this->page + 1 : $this->pageCount);
     }
 
-    /**
-     * Returns previous page at pagination operation.
-     *
-     * @return bool
-     */
     public function prevPage()
     {
         return ($this->page - 1 > 0 ? $this->page - 1 : 1);
     }
 
-    /**
-     * Returns SQL query as string.
-     *
-     * @return mixed
-     */
     public function getSqlString()
     {
-        return $this->sql;
+        $this->get_where();
+        return $this->errorTemplate($this->sql, __CLASS__ . ' SQL Sorgusu');
     }
 
     public function between($column, $values = [])
@@ -504,13 +386,13 @@ class BasicDB extends \PDO
         return $this;
     }
 
-    public function not_between($column, $values = [])
+    public function notBetween($column, $values = [])
     {
         $this->where($column, $values, 'NOT BETWEEN');
         return $this;
     }
 
-    public function find_in_set($column, $value)
+    public function findInSet($column, $value)
     {
         $this->where($column, $value, 'FIND_IN_SET');
         return $this;
@@ -522,7 +404,7 @@ class BasicDB extends \PDO
         return $this;
     }
 
-    public function not_in($column, $value)
+    public function notIn($column, $value)
     {
         $this->where($column, $value, 'NOT IN');
         return $this;
@@ -534,10 +416,60 @@ class BasicDB extends \PDO
         return $this;
     }
 
-    public function not_like($column, $value)
+    public function notLike($column, $value)
     {
         $this->where($column, $value, 'NOT LIKE');
         return $this;
+    }
+
+    public function soundex($column, $value)
+    {
+        $this->where($column, $value, 'SOUNDEX');
+        return $this;
+    }
+
+    public function __call($name, $args)
+    {
+        die($name . '  metodu ' . __CLASS__ . ' sınıfı içinde bulunamadı.');
+    }
+
+    private function showError(PDOException $error)
+    {
+        $this->errorTemplate($error->getMessage());
+    }
+
+    private function errorTemplate($errorMsg, $title = null)
+    {
+        ?>
+        <div class="db-error-msg-content">
+            <div class="db-error-title">
+                <?= $title ? $title : __CLASS__ . ' Hatası:' ?>
+            </div>
+            <div class="db-error-msg"><?= $errorMsg ?></div>
+        </div>
+        <style>
+            .db-error-msg-content {
+                padding: 15px;
+                border-left: 5px solid #c00000;
+                background: rgba(192, 0, 0, 0.06);
+                background: #fff;
+                margin-bottom: 10px;
+            }
+
+            .db-error-title {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            .db-error-msg {
+                margin-top: 15px;
+                font-size: 14px;
+                font-family: Consolas, Monaco, Menlo, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
+                color: #c00000;
+            }
+        </style>
+        <?php
     }
 
 }
