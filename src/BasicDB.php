@@ -2,8 +2,6 @@
 
 namespace Erbilen\Database;
 
-<?php
-
 /**
  * Class BasicDB
  *
