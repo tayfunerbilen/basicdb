@@ -34,3 +34,11 @@ We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
 
 ### Fixed
 - Examples
+
+## 0.3.0 - 2018-08-23
+
+### Added
+- Debug
+- Soundex method
+- _call() magic method
+- Grouping for where clause
