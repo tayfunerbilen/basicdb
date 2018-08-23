@@ -1,7 +1,5 @@
 <?php
 
-namespace Erbilen\Database;
-
 /**
  * Class BasicDB
  *
