@@ -2,6 +2,8 @@
 
 namespace Erbilen\Database;
 
+<?php
+
 /**
  * Class BasicDB
  *
@@ -127,8 +129,12 @@ class BasicDB extends \PDO
 
     public function first()
     {
-        $query = $this->generateQuery();
-        return $query->fetch(parent::FETCH_ASSOC);
+        try {
+            $query = $this->generateQuery();
+            return $query->fetch(parent::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->showError($e);
+        }
     }
 
     public function generateQuery()
@@ -267,20 +273,24 @@ class BasicDB extends \PDO
 
     public function set($data, $value = null)
     {
-        if ($this->type == 'counter_update') {
-            $this->sql .= ' SET ' . $data . ' = ' . $data . ' ' . $value;
-        } else {
-            $this->sql .= ' SET ' . implode(', ', array_map(function ($item) {
-                    return $item . ' = :' . $item;
-                }, array_keys($data)));
+        try {
+            if ($this->type == 'counter_update') {
+                $this->sql .= ' SET ' . $data . ' = ' . $data . ' ' . $value;
+            } else {
+                $this->sql .= ' SET ' . implode(', ', array_map(function ($item) {
+                        return $item . ' = :' . $item;
+                    }, array_keys($data)));
+            }
+
+            $this->get_where();
+
+            $query = $this->prepare($this->sql);
+            $result = $query->execute($value ? null : $data);
+
+            return $result;
+        } catch (PDOException $e) {
+            $this->showError($e);
         }
-
-        $this->get_where();
-
-        $query = $this->prepare($this->sql);
-        $result = $query->execute($value ? null : $data);
-
-        return $result;
     }
 
     public function lastId()
