@@ -8,7 +8,7 @@ $db = new Erbilen\Database\BasicDB('localhost', 'testdb', 'testuser', 'password'
 
 // select query
 $db->from('table_name')
-  ->run();
+  ->all();
   
 // single select query
 $db->from('table_name')
@@ -22,32 +22,32 @@ $db->from('table_name')
 // join
 $db->from('table_name')
   ->join('other_table', '%s.other_table_id = %s.table_id')
-  ->run();
+  ->all();
 
 // left join
 $db->from('table_name')
   ->left_join('other_table', '%s.other_table_id = %s.table_id')
-  ->run();
+  ->all();
 
 // right join
 $db->from('table_name')
   ->right_join('other_table', '%s.other_table_id = %s.table_id')
-  ->run();
+  ->all();
 
 // orderby
 $db->from('table_name')
   ->orderby('column_name', 'ASC')
-  ->run();
+  ->all();
 
 // groupby
 $db->from('table_name')
   ->groupby('column_name')
-  ->run();
+  ->all();
 
 // limit
 $db->from('table_name')
   ->limit(0, 20)
-  ->run();
+  ->all();
   
 // with where..
 $db->from('table_name')
@@ -125,7 +125,7 @@ $pagination = $db->pagination($totalRecord, $pageLimit, $pageParam);
 $query = $db->from('users')
             ->orderby('user_id', 'DESC')
             ->limit($pagination['start'], $pagination['limit'])
-            ->run();
+            ->all();
 
 print_r($query);
 
