@@ -15,8 +15,6 @@
  */
 class BasicDB extends \PDO
 {
-
-    private $type;
     private $sql;
     private $unionSql;
     private $tableName;
@@ -227,47 +225,35 @@ class BasicDB extends \PDO
                     ) {
                         $whereClause .= (isset($arrs[$key - 1]) && $arrs[$key - 1]['grouped'] == true ? ' ' . $item['logical'] : null) . ' (';
                     }
-
                     switch ($item['mark']) {
-
                         case 'LIKE':
                             $where = $item['column'] . ' LIKE "%' . $item['value'] . '%"';
                             break;
-
                         case 'NOT LIKE':
                             $where = $item['column'] . ' NOT LIKE "%' . $item['value'] . '%"';
                             break;
-
                         case 'BETWEEN':
                             $where = $item['column'] . ' BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
                             break;
-
                         case 'NOT BETWEEN':
                             $where = $item['column'] . ' NOT BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
                             break;
-
                         case 'FIND_IN_SET':
                             $where = 'FIND_IN_SET("' . $item['value'] . '", ' . $item['column'] . ')';
                             break;
-
                         case 'IN':
                             $where = $item['column'] . ' IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
                             break;
-
                         case 'NOT IN':
                             $where = $item['column'] . ' NOT IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
                             break;
-
                         case 'SOUNDEX':
                             $where = 'SOUNDEX(' . $item['column'] . ') LIKE CONCAT(\'%\', TRIM(TRAILING \'0\' FROM SOUNDEX(\'' . $item['value'] . '\')), \'%\')';
                             break;
-
                         default:
                             $where = $item['column'] . ' ' . $item['mark'] . ' "' . $item['value'] . '"';
                             break;
-
                     }
-
                     if ($key == 0) {
                         if (
                             $item['grouped'] == false &&
@@ -280,7 +266,6 @@ class BasicDB extends \PDO
                     } else {
                         $whereClause .= ' ' . $item['logical'] . ' ' . $where;
                     }
-
                     if (
                         $item['grouped'] === true &&
                         (
@@ -319,19 +304,25 @@ class BasicDB extends \PDO
     public function set($data, $value = null)
     {
         try {
-            if ($this->type == 'counter_update') {
-                $this->sql .= ' SET ' . $data . ' = ' . $data . ' ' . $value;
+            if ($value) {
+                if (strstr($value, '+')) {
+                    $this->sql .= ' SET ' . $data . ' = ' . $data . ' ' . $value;
+                    $executeValue = null;
+                } else {
+                    $this->sql .= ' SET ' . $data . ' = :' . $data . '';
+                    $executeValue = [
+                        $data => $value
+                    ];
+                }
             } else {
                 $this->sql .= ' SET ' . implode(', ', array_map(function ($item) {
                         return $item . ' = :' . $item;
                     }, array_keys($data)));
+                $executeValue = $data;
             }
-
             $this->get_where();
-
             $query = $this->prepare($this->sql);
-            $result = $query->execute($value ? null : $data);
-
+            $result = $query->execute($executeValue);
             return $result;
         } catch (PDOException $e) {
             $this->showError($e);
@@ -345,13 +336,6 @@ class BasicDB extends \PDO
 
     public function update($tableName)
     {
-        $this->sql = 'UPDATE ' . $tableName;
-        return $this;
-    }
-
-    public function counter_update($tableName)
-    {
-        $this->type = __FUNCTION__;
         $this->sql = 'UPDATE ' . $tableName;
         return $this;
     }
@@ -530,5 +514,4 @@ class BasicDB extends \PDO
         </style>
         <?php
     }
-
 }
