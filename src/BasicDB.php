@@ -31,6 +31,13 @@ class BasicDB extends \PDO
     private $pageCount;
     private $paginationLimit;
     private $html;
+    private $paginationTemplate;
+    private $paginationTemplateUseOnce;
+    private $defaultPaginationTemplate = <<<HTML
+<li class="{{active}}">
+  <a href="{{url}}">{{page}}</a>
+</li>
+HTML;
     public $debug = false;
 
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
@@ -398,13 +405,34 @@ class BasicDB extends \PDO
         if ($this->totalRecord > $this->paginationLimit) {
             for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i++) {
                 if ($i > 0 && $i <= $this->pageCount) {
-                    $this->html .= '<li class="';
-                    $this->html .= ($i == $this->page ? $class : null);
-                    $this->html .= '"><a href="' . str_replace('[page]', $i, $url) . '">' . $i . '</a>';
+                  $vars = [
+                    'active' => ($i == $this->page ? $class : null),
+                    'url' => $url,
+                    'page' => $i
+                  ];
+
+                  $template = $this->paginationTemplate ? $this->paginationTemplate : $this->defaultPaginationTemplate;
+
+                  preg_match_all('/{{(\w+)}}/i', $template, $template_vars);
+
+                  foreach($template_vars[1] as $var) {
+                    if ($vars[$var]) $template = str_replace('{{'.$var.'}}', $vars[$var], $template);
+                  }
+
+                  $template = preg_replace('/{{\w+}}/i', '', $template);
+
+                  $html .= $template;
                 }
             }
-            return $this->html;
+            if ($this->paginationTemplateUseOnce) $this->paginationTemplate = null;
+            return $html;
         }
+    }
+
+    public function setPaginationTemplate($template, $useOnce = false)
+    {
+      $this->paginationTemplate = $template;
+      $this->paginationTemplateUseOnce = $useOnce;
     }
 
     public function nextPage()
