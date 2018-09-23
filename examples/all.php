@@ -137,4 +137,4 @@ $db->setPaginationTemplate($template);
 
 print_r($query);
 
-echo $db->showPagination('http://localhost/test/?'.$pageParam.'=[page]');
+echo $db->showPagination('http://localhost/test/?'.$pageParam.'={{page}}');
