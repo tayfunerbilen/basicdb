@@ -33,6 +33,7 @@ class BasicDB extends \PDO
     private $html;
     private $paginationTemplate;
     private $paginationTemplateUseOnce;
+    private $type;
     private $defaultPaginationTemplate = <<<HTML
 <li class="{{active}}">
   <a href="{{url}}">{{page}}</a>
@@ -199,6 +200,7 @@ HTML;
         }
         if ($this->type == 'union') {
             $this->sql = $this->unionSql . ' UNION ALL ' . $this->sql;
+            $this->type = '';
         }
         if ($this->debug) {
             echo $this->getSqlString();
