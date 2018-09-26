@@ -13,8 +13,9 @@
  * @author Midori Koçak
  * @update 2 July 2015
  */
-class BasicDB extends \PDO
+class basicdb extends \PDO
 {
+    private $type;
     private $sql;
     private $unionSql;
     private $tableName;
@@ -28,17 +29,9 @@ class BasicDB extends \PDO
     private $limit;
     private $page;
     private $totalRecord;
-    private $pageCount;
+    public $pageCount;
     private $paginationLimit;
     private $html;
-    private $paginationTemplate;
-    private $paginationTemplateUseOnce;
-    private $type;
-    private $defaultPaginationTemplate = <<<HTML
-<li class="{{active}}">
-  <a href="{{url}}">{{page}}</a>
-</li>
-HTML;
     public $debug = false;
 
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
@@ -185,7 +178,8 @@ HTML;
             $this->sql .= implode(' ', $this->join);
             $this->join = null;
         }
-        $this->get_where();
+        $this->get_where('where');
+        $this->get_where('having');
         if ($this->groupBy) {
             $this->sql .= $this->groupBy;
             $this->groupBy = null;
@@ -200,23 +194,22 @@ HTML;
         }
         if ($this->type == 'union') {
             $this->sql = $this->unionSql . ' UNION ALL ' . $this->sql;
-            $this->type = '';
         }
         if ($this->debug) {
             echo $this->getSqlString();
         }
+        $this->type = '';
         $query = $this->query($this->sql);
         return $query;
     }
 
-    private function get_where()
+    private function get_where($conditionType = 'where')
     {
         if (
-            (is_array($this->where) && count($this->where) > 0) ||
-            (is_array($this->having) && count($this->having) > 0)
+        (is_array($this->{$conditionType}) && count($this->{$conditionType}) > 0)
         ) {
-            $whereClause = ' ' . ($this->having ? 'HAVING' : 'WHERE') . ' ';
-            $arrs = $this->having ? $this->having : $this->where;
+            $whereClause = ' ' . ($conditionType == 'having' ? 'HAVING' : 'WHERE') . ' ';
+            $arrs = $this->{$conditionType};
             if (is_array($arrs)) {
                 foreach ($arrs as $key => $item) {
                     if (
@@ -299,8 +292,7 @@ HTML;
             $whereClause = preg_replace('/(\|\||&&)\s+\)/', ')', $whereClause);
             $this->sql .= $whereClause;
             $this->unionSql .= $whereClause;
-            $this->where = null;
-            $this->having = null;
+            $this->{$conditionType} = null;
         }
     }
 
@@ -329,7 +321,8 @@ HTML;
                     }, array_keys($data)));
                 $executeValue = $data;
             }
-            $this->get_where();
+            $this->get_where('where');
+            $this->get_where('having');
             $query = $this->prepare($this->sql);
             $result = $query->execute($executeValue);
             return $result;
@@ -358,7 +351,8 @@ HTML;
     public function done()
     {
         try {
-            $this->get_where();
+            $this->get_where('where');
+            $this->get_where('having');
             $query = $this->exec($this->sql);
             return $query;
         } catch (PDOException $e) {
@@ -372,7 +366,8 @@ HTML;
             $this->sql .= implode(' ', $this->join);
             $this->join = null;
         }
-        $this->get_where();
+        $this->get_where('where');
+        $this->get_where('having');
         if ($this->orderBy) {
             $this->sql .= $this->orderBy;
             $this->orderBy = null;
@@ -407,34 +402,13 @@ HTML;
         if ($this->totalRecord > $this->paginationLimit) {
             for ($i = $this->page - 5; $i < $this->page + 5 + 1; $i++) {
                 if ($i > 0 && $i <= $this->pageCount) {
-                  $vars = [
-                    'active' => ($i == $this->page ? $class : null),
-                    'url' => $url,
-                    'page' => $i
-                  ];
-
-                  $template = $this->paginationTemplate ? $this->paginationTemplate : $this->defaultPaginationTemplate;
-
-                  preg_match_all('/{{(\w+)}}/i', $template, $template_vars);
-
-                  foreach($template_vars[1] as $var) {
-                    if ($vars[$var]) $template = str_replace('{{'.$var.'}}', $vars[$var], $template);
-                  }
-
-                  $template = preg_replace('/{{\w+}}/i', '', $template);
-
-                  $html .= $template;
+                    $this->html .= '<li class="';
+                    $this->html .= ($i == $this->page ? $class : null);
+                    $this->html .= '"><a href="' . str_replace('[page]', $i, $url) . '">' . $i . '</a>';
                 }
             }
-            if ($this->paginationTemplateUseOnce) $this->paginationTemplate = null;
-            return $html;
+            return $this->html;
         }
-    }
-
-    public function setPaginationTemplate($template, $useOnce = false)
-    {
-      $this->paginationTemplate = $template;
-      $this->paginationTemplateUseOnce = $useOnce;
     }
 
     public function nextPage()
@@ -449,7 +423,8 @@ HTML;
 
     public function getSqlString()
     {
-        $this->get_where();
+        $this->get_where('where');
+        $this->get_where('having');
         return $this->errorTemplate($this->sql, __CLASS__ . ' SQL Sorgusu');
     }
 
