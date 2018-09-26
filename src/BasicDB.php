@@ -179,11 +179,11 @@ class basicdb extends \PDO
             $this->join = null;
         }
         $this->get_where('where');
-        $this->get_where('having');
         if ($this->groupBy) {
             $this->sql .= $this->groupBy;
             $this->groupBy = null;
         }
+        $this->get_where('having');
         if ($this->orderBy) {
             $this->sql .= $this->orderBy;
             $this->orderBy = null;
@@ -367,14 +367,14 @@ class basicdb extends \PDO
             $this->join = null;
         }
         $this->get_where('where');
+        if ($this->groupBy) {
+            $this->sql .= $this->groupBy;
+            $this->groupBy = null;
+        }
         $this->get_where('having');
         if ($this->orderBy) {
             $this->sql .= $this->orderBy;
             $this->orderBy = null;
-        }
-        if ($this->groupBy) {
-            $this->sql .= $this->groupBy;
-            $this->groupBy = null;
         }
         if ($this->limit) {
             $this->sql .= $this->limit;
