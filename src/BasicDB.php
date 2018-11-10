@@ -9,7 +9,7 @@
  * @web http://www.mtkocak.com
  * @mail mtkocak@gmail.com
  * @date 13 April 2014
- * @update 23 August 2018
+ * @update 10 November 2018
  * @author Midori Koçak
  * @update 2 July 2015
  */
@@ -33,6 +33,9 @@ class basicdb extends \PDO
     private $paginationLimit;
     private $html;
     public $debug = false;
+    public $reference = [
+        'NOW()'
+    ];
 
     public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
     {
@@ -241,7 +244,7 @@ class basicdb extends \PDO
                             $where = $item['column'] . ' NOT BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
                             break;
                         case 'FIND_IN_SET':
-                            $where = 'FIND_IN_SET("' . $item['value'] . '", ' . $item['column'] . ')';
+                            $where = 'FIND_IN_SET(' . $item['column'] . ', "' . $item['value'] . '")';
                             break;
                         case 'IN':
                             $where = $item['column'] . ' IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
@@ -253,7 +256,7 @@ class basicdb extends \PDO
                             $where = 'SOUNDEX(' . $item['column'] . ') LIKE CONCAT(\'%\', TRIM(TRAILING \'0\' FROM SOUNDEX(\'' . $item['value'] . '\')), \'%\')';
                             break;
                         default:
-                            $where = $item['column'] . ' ' . $item['mark'] . ' "' . $item['value'] . '"';
+                            $where = $item['column'] . ' ' . $item['mark'] . ' ' . (preg_grep('/' . trim($item['value']) . '/i', $this->reference) ? $item['value'] : '"' . $item['value'] . '"');
                             break;
                     }
                     if ($key == 0) {
