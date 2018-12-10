@@ -244,6 +244,9 @@ class basicdb extends \PDO
                             $where = $item['column'] . ' NOT BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
                             break;
                         case 'FIND_IN_SET':
+                            $where = 'FIND_IN_SET("' . $item['column'] . '", ' . $item['value'] . ')';
+                            break;
+                        case 'FIND_IN_SET_REVERSE':
                             $where = 'FIND_IN_SET(' . $item['column'] . ', "' . $item['value'] . '")';
                             break;
                         case 'IN':
@@ -446,6 +449,12 @@ class basicdb extends \PDO
     public function findInSet($column, $value)
     {
         $this->where($column, $value, 'FIND_IN_SET');
+        return $this;
+    }
+
+    public function findInSetReverse($column, $value)
+    {
+        $this->where($column, $value, 'FIND_IN_SET_REVERSE');
         return $this;
     }
 
