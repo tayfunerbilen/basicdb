@@ -244,10 +244,10 @@ class basicdb extends \PDO
                             $where = $item['column'] . ' NOT BETWEEN "' . $item['value'][0] . '" AND "' . $item['value'][1] . '"';
                             break;
                         case 'FIND_IN_SET':
-                            $where = 'FIND_IN_SET("' . $item['column'] . '", ' . $item['value'] . ')';
+                            $where = 'FIND_IN_SET(' . $item['column'] . ', ' . $item['value'] . ')';
                             break;
                         case 'FIND_IN_SET_REVERSE':
-                            $where = 'FIND_IN_SET(' . $item['column'] . ', "' . $item['value'] . '")';
+                            $where = 'FIND_IN_SET(' . $item['value'] . ', ' . $item['column'] . ')';
                             break;
                         case 'IN':
                             $where = $item['column'] . ' IN(' . (is_array($item['value']) ? implode(', ', $item['value']) : $item['value']) . ')';
