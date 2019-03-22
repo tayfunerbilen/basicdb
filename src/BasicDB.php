@@ -331,10 +331,6 @@ class basicdb extends \PDO
                 }
             } else {
 
-                if ($this->tableName != 'branches') {
-                    $data['branch_id'] = session('branch_id');
-                }
-
                 $this->sql .= ' SET ' . implode(', ', array_map(function ($item) {
                         return $item . ' = :' . $item;
                     }, array_keys($data)));
