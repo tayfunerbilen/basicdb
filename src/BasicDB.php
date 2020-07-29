@@ -41,7 +41,7 @@ class basicdb extends \PDO
         'NOW()'
     ];
 
-    public function __construct($host, $dbname, $username, $password, $charset = 'utf8')
+    public function __construct($host, $dbname, $username, $password, $charset = 'utf8mb4')
     {
         try {
             parent::__construct('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
