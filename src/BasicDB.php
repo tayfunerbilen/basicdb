@@ -163,7 +163,7 @@ class basicdb extends \PDO
     {
         try {
             $query = $this->generateQuery();
-            $result = $query->fetchAll(parent::FETCH_ASSOC);
+            $result = $query->fetchAll(parent::FETCH_OBJ);
             return $result;
         } catch (PDOException $e) {
             $this->showError($e);
