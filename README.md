@@ -27,7 +27,7 @@ For testing purposes you should create a test database and add credentials to te
 
 ## Usage
 
-See examples doler.
+See examples folder.
 
 ## How to test the software
 
