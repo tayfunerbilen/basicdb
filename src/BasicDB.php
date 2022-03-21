@@ -312,6 +312,19 @@ class basicdb extends \PDO
         $this->sql = 'INSERT INTO ' . $tableName;
         return $this;
     }
+    
+     /**
+     * Used for insert operation
+     *
+     * @param
+     *            $tableName
+     * @return $this
+     */
+    public function insertIgnore($tableName)
+    {
+        $this->sql = 'INSERT IGNORE INTO ' . $tableName;
+        return $this;
+    }
 
     public function set($data, $value = null)
     {
